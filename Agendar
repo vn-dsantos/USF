@@ -1,0 +1,50 @@
+Agendar evento de aula pratica no calendário do responsavel com informações de tema, data, horario, turno, Componente, Professor e Labortatório.
+  
+  function agendar() {
+    var app = SpreadsheetApp.getActiveSheet();
+    var selectedRange = SpreadsheetApp.getActiveRange(); // Obtém o intervalo selecionado
+    var startRow = selectedRange.getRow(); // Obtém o número da primeira linha selecionada
+    var numRows = selectedRange.getNumRows(); // Obtém o número de linhas selecionadas
+    var signups = app.getDataRange().getValues();
+    var ui = SpreadsheetApp.getUi();
+  
+    for (var i = 0; i < numRows; i++) {
+      var rowIndex = startRow + i; //linha atual
+  
+      var data = signups[rowIndex - 1];
+      var professor = data[11];
+      var componente = data[10];
+      var date = new Date(data[2]);
+      var dia = data[26];
+      var id_tec = data[22];
+      var status = data[0];
+      var turno = data[5];
+      var lab_1 = data[15];
+      var lab_2 = data[16];
+      var lab_3 = data[17];
+      var lab_4 = data[18];
+      var lab_5 = data[19];
+      var nalunos = data[14];
+      var temaaula = data[20];
+      var eventDesc = "A prática do professor: " + professor + ", será realizada nos labs: " + lab_1 + " " + lab_2 + " " + lab_3 + lab_4 + " " + lab_5 + ". Turno: " + turno + ". Status: " + status + ". Numero de Alunos: " + nalunos + ". Tema de aula: " + temaaula;
+  
+      var id_do_calendario = CalendarApp.getId();
+      var calendar = CalendarApp.getCalendarById(id_do_calendario);
+      var options = {
+        description: eventDesc,
+        guests: id_tec,
+        sendInvites: true,
+      };
+  
+      var evento = calendar.createEvent("Aula Prática " + componente + " - " + dia, date, date, options);
+      var eventoid = evento.getId();
+  
+      var range = app.getRange(rowIndex, 28); 
+      range.setValue(eventoid); 
+  
+  
+      var activeRange = app.getRange("A" + rowIndex + ":Y" + rowIndex);
+      activeRange.setBackground("#6defd3"); 
+    }
+    ui.alert("Aula registrada no calendário!");
+  }
